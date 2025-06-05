@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        select, button, textarea { width: 100%; padding: 10px; margin-top: 10px; }
+        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        textarea { height: 200px; }
+    </style>
+</head>
+<body>
+    <h2>Customer Review Email Generator</h2>
+    
+    <label for="reviewSelect">Select a Review:</label>
+    <select id="reviewSelect">
+        {% for review in reviews %}
+        <option value="{{ review }}">{{ review }}</option>
+        {% endfor %}
+    </select>
+    
+    <button onclick="generateEmail()">Generate Email</button>
+
+    <label for="emailOutput">Generated Email:</label>
+    <textarea id="emailOutput" readonly></textarea>
+
+    <script>
+        function generateEmail() {
+            const selectedReview = document.getElementById('reviewSelect').value;
+            fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ review: selectedReview })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('emailOutput').value = data.email;
+            })
+            .catch(error => {
+                document.getElementById('emailOutput').value = "Error generating email.";
+            });
+        }
+    </script>
+</body>
+</html>
